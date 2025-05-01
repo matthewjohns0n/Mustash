@@ -40,11 +40,11 @@ class Mustash_lib extends Mustash_base {
 		ee()->load->model('mustash_model');
 		$this->settings = $this->get_settings();
 	}
-	
+
 	public function get_settings()
 	{
-		if (!isset(ee()->session->cache['mustash']['settings'])) 
-		{	
+		if (!isset(ee()->session->cache['mustash']['settings']))
+		{
 			ee()->session->cache['mustash']['settings'] = ee()->mustash_settings->get_settings();
 		}
 		return ee()->session->cache['mustash']['settings'];
@@ -57,7 +57,7 @@ class Mustash_lib extends Mustash_base {
 		{
 			// uninstall all existing plugins
 			$plugins = $this->get_all_plugins();
-			
+
 			foreach($plugins as $p)
 			{
 				$this->plugin($p)->uninstall();
@@ -77,18 +77,18 @@ class Mustash_lib extends Mustash_base {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * load a "plugin"
 	 *
 	 * @access	public
 	 * @param	string
 	 * @return	object
-	 */	
-	public function plugin($plugin) 
+	 */
+	public function plugin($plugin)
 	{
     	if( ! isset(self::$plugins[$plugin]))
-		{	
+		{
 			// load and instantiate the plugin if it doesn't exist already
 			require_once PATH_THIRD. $this->package . '/plugins/' . $plugin .'.php';
 			self::$plugins[$plugin] = new $plugin;
@@ -113,10 +113,8 @@ class Mustash_lib extends Mustash_base {
   		ee()->load->helper('directory');
 		$plugins = directory_map(PATH_THIRD . $this->package . '/plugins', 1);
 
-		# PHP 5.3+ only
-		#$plugins = preg_filter('/^(stash_[a-zA-Z0-9_-]+_pi)'.EXT.'$/i', '$1', $plugins);
-		$result = preg_replace('/^(stash_[a-zA-Z0-9_-]+_pi)\.php$/i', '$1', $plugins);
-		$plugins = array_diff($result, $plugins);
+		// PHP 5.3+ was the original requirement, now we're supporting PHP 8.0+
+		$plugins = preg_filter('/^(stash_[a-zA-Z0-9_-]+_pi)\.php$/i', '$1', $plugins);
 
 		return $plugins;
   	}
@@ -152,7 +150,7 @@ class Mustash_lib extends Mustash_base {
 		}
 		return $errors;
 	}
-	
+
 
 	public function scope_select_options($label='', $label_value='')
 	{
@@ -166,9 +164,9 @@ class Mustash_lib extends Mustash_base {
 		$list += array(
 	   		'site' => lang('var_scope_global'),
 	   		'user' 	=> lang('var_scope_user')
-		);	
-			
-		return $list;		
+		);
+
+		return $list;
 	}
 
 	public function bundle_select_options($label='', $label_value='')
@@ -187,7 +185,7 @@ class Mustash_lib extends Mustash_base {
 
 		return $list;
 	}
-	
+
 	public function is_installed_module($module_name)
 	{
 		$data = ee()->db->select('module_name')->from('modules')->like('module_name', $module_name)->get();
@@ -225,24 +223,24 @@ class Mustash_lib extends Mustash_base {
 	 * @access     public
 	 * @return     boolean
 	 */
-	public function prune() 
+	public function prune()
 	{
 		return ee()->mustash_model->prune_keys();
 	}
 
 	/**
-	 * Check that the logged in user has permission to access 
+	 * Check that the logged in user has permission to access
 	 * a particular area of the control panel interface
 	 *
 	 * @access     public
 	 * @param      string
 	 * @return     void
 	 */
-	public function can_access($area) 
+	public function can_access($area)
 	{
 		if ( isset($this->settings['can_manage_'.$area]))
 		{
-			if (ee()->session->userdata['group_id'] == 1) 
+			if (ee()->session->userdata['group_id'] == 1)
 			{
 				// superadmins get a free pass...
 				return TRUE;
@@ -258,7 +256,7 @@ class Mustash_lib extends Mustash_base {
 	// ------------------------------------------------------
 	//  Wrappers for CRUD model methods
 	// ------------------------------------------------------
-	
+
 	public function get_variables($where=array(), $perpage=20, $offset=0, $order=NULL)
 	{
 		return ee()->mustash_model->get_variables($where, $perpage, $offset, $order);

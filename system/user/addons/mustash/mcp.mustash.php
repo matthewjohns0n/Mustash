@@ -12,12 +12,12 @@ use EllisLab\ExpressionEngine\Library\CP\Table;
  * @since		1.0
  * @filesource 	./system/user/addons/mustash/mcp.mustash.php
  */
-class mustash_mcp {
+class Mustash_mcp {
 
 	public $url_base = '';
 
 	protected $errors = array();
-	
+
 	public function __construct()
 	{
 		// load EE stuff
@@ -35,17 +35,17 @@ class mustash_mcp {
 			array(
 				'mustash.css',
 			)
-		);	
+		);
 	}
-	
+
 	public function index()
 	{
 		return $this->variables();
-	}	
-	
+	}
+
 	public function variables()
-	{	
-	 	/* ----------------------------------------------------------------------------- 
+	{
+	 	/* -----------------------------------------------------------------------------
      	   Bulk actions
      	   ----------------------------------------------------------------------------- */
 		if (ee()->input->post('bulk_action') == 'remove')
@@ -53,7 +53,7 @@ class mustash_mcp {
 			$this->delete_variables(ee()->input->post('toggle'));
 		}
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Setup defaults
      	   ----------------------------------------------------------------------------- */
 		$base_url = ee('CP/URL', $this->url_base);
@@ -61,7 +61,7 @@ class mustash_mcp {
 		$where = array();
 		$order = FALSE;
 
-	 	/* ----------------------------------------------------------------------------- 
+	 	/* -----------------------------------------------------------------------------
      	   Add filters
      	   ----------------------------------------------------------------------------- */
 
@@ -83,7 +83,7 @@ class mustash_mcp {
 		$vars['filters'] = $filters->render($base_url);
 
 
-	 	/* ----------------------------------------------------------------------------- 
+	 	/* -----------------------------------------------------------------------------
      	   Register globals
      	   ----------------------------------------------------------------------------- */
 
@@ -144,7 +144,7 @@ class mustash_mcp {
 			$base_url->setQueryStringVariable('sort_dir', $sort_dir);
 		}
 
-	 	/* ----------------------------------------------------------------------------- 
+	 	/* -----------------------------------------------------------------------------
      	   Generate data
      	   ----------------------------------------------------------------------------- */
 
@@ -155,7 +155,7 @@ class mustash_mcp {
 		$total = ee()->mustash_lib->get_total_variables($where, $perpage, $offset, $order);
 
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Pagination
      	   ----------------------------------------------------------------------------- */
 
@@ -164,7 +164,7 @@ class mustash_mcp {
 			->currentPage($page)
 			->render($base_url);
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Construct table
      	   ----------------------------------------------------------------------------- */
 
@@ -195,7 +195,7 @@ class mustash_mcp {
 		if(count($variables) >= '1')
 		{
 			foreach($variables as $v)
-			{		
+			{
 				$data[] = array(
 					$v['id'],
 
@@ -207,8 +207,8 @@ class mustash_mcp {
 					html_entity_decode(stash_convert_timestamp($v['created'])),
 					html_entity_decode(stash_convert_timestamp($v['expire'])),
 					$v['bundle_label'],
-					$v['scope'] == 'site' 
-						? '<span class="st-info">'.ucfirst($v['scope']).'</span>' 
+					$v['scope'] == 'site'
+						? '<span class="st-info">'.ucfirst($v['scope']).'</span>'
 						: '<span class="st-draft">'.ucfirst($v['scope']).'</span>',
 					array(
 						'name'  => 'toggle[]',
@@ -220,10 +220,10 @@ class mustash_mcp {
 				);
 			}
 		}
-		
+
 		$table->setData($data);
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Confirm remove modal
      	   ----------------------------------------------------------------------------- */
 
@@ -233,12 +233,12 @@ class mustash_mcp {
 				'cp/confirm_remove',
 			),
 		));
-	
-		/* ----------------------------------------------------------------------------- 
+
+		/* -----------------------------------------------------------------------------
      	   Construct view
      	   ----------------------------------------------------------------------------- */
 
-		// body	
+		// body
 		$vars['cp_heading'] = lang('variables');
 		$vars['cp_subheading'] = sprintf(lang('found_variables_total'), $total);
 		$vars['total'] = $total;
@@ -254,14 +254,14 @@ class mustash_mcp {
 		$vars['clear_cache_url'] = ee('CP/URL', $this->url_base.'/clear_cache_confirm');
 
 		return $this->_load_view(
-			'mustash:variables', 
-			$vars, 
+			'mustash:variables',
+			$vars,
 			lang('variables')
 		);
 	}
 
 	public function edit_variable()
-	{	
+	{
 		// get the variable id
 		if ( ! $id = (int) ee()->input->get('id') )
 		{
@@ -279,7 +279,7 @@ class mustash_mcp {
 
 		// update the variable?
 		if(isset($_POST['update_variable']))
-		{	
+		{
 			$data = array(
 				'key_name'	 => $vars['key_name'],
 				'bundle_id'	 => $vars['bundle_id'],
@@ -287,7 +287,7 @@ class mustash_mcp {
 			);
 
 			if(ee()->mustash_lib->update_variable($id, $data))
-			{	
+			{
 				// updated successfully
 				ee()->logger->log_action(ee()->lang->line('log_variable_updated'));
 
@@ -297,8 +297,8 @@ class mustash_mcp {
 					->addToBody(lang('update_success'))
 					->defer();
 
-				ee()->functions->redirect( ee('CP/URL', $this->url_base) );		
-				exit;			
+				ee()->functions->redirect( ee('CP/URL', $this->url_base) );
+				exit;
 			}
 			else
 			{
@@ -309,20 +309,20 @@ class mustash_mcp {
 					->addToBody(lang('update_fail'))
 					->defer();
 
-				ee()->functions->redirect( ee('CP/URL', $this->url_base) );	
-				exit;					
+				ee()->functions->redirect( ee('CP/URL', $this->url_base) );
+				exit;
 			}
 		}
 
 		// add form URL
 		$vars['form_url'] = ee('CP/URL', $this->url_base.'/edit_variable')->setQueryStringVariable('id', $id);
-	
+
 		// render the view
 		return $this->_load_view(
-			'mustash:edit_variable', 
-			$vars, 
+			'mustash:edit_variable',
+			$vars,
 			lang('edit_variable')
-		);		
+		);
 	}
 
 	public function delete_variables($damned)
@@ -347,13 +347,13 @@ class mustash_mcp {
 				->addToBody(lang('delete_fail'))
 				->defer();
 		}
-		
-		ee()->functions->redirect( ee('CP/URL', $this->url_base, ee()->cp->get_url_state()) );		
 
-	}	
+		ee()->functions->redirect( ee('CP/URL', $this->url_base, ee()->cp->get_url_state()) );
+
+	}
 
 	public function clear_cache_confirm()
-	{	
+	{
 		$vars = array();
 
 		// add form URL
@@ -363,8 +363,8 @@ class mustash_mcp {
 		$vars['invalidate'] = ee()->config->item('stash_invalidation_period') ? ee()->config->item('stash_invalidation_period') : 300;
 
 		return $this->_load_view(
-			'mustash:clear_cache_confirm', 
-			$vars, 
+			'mustash:clear_cache_confirm',
+			$vars,
 			lang('clear_cache')
 		);
 	}
@@ -458,13 +458,13 @@ class mustash_mcp {
 			$redirect->setQueryStringVariable('scope', $scope);
 		}
 
-		ee()->functions->redirect($redirect);	
+		ee()->functions->redirect($redirect);
 	}
 
 	public function bundles()
 	{
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Access control
      	   ----------------------------------------------------------------------------- */
 
@@ -473,7 +473,7 @@ class mustash_mcp {
 			show_error(lang('unauthorized_access'));
 		}
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Bulk actions
      	   ----------------------------------------------------------------------------- */
 
@@ -482,7 +482,7 @@ class mustash_mcp {
 			$this->_delete_bundles(ee()->input->post('toggle'));
 		}
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Setup defaults
      	   ----------------------------------------------------------------------------- */
 		$base_url = ee('CP/URL', $this->url_base.'/bundles');
@@ -490,14 +490,14 @@ class mustash_mcp {
 		$where = array();
 		$order = FALSE;
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Register globals
      	   ----------------------------------------------------------------------------- */
 
 		// pagination
 		$page 		= ((int) ee()->input->get('page')) ?: 1;
 		$perpage 	= $this->settings['list_limit'];
-		$offset 	= ($page - 1) * $perpage; // Offset is 0 indexed   
+		$offset 	= ($page - 1) * $perpage; // Offset is 0 indexed
 
 		// sort column
 		$sort_col 	= ee()->input->get('sort_col');
@@ -520,14 +520,14 @@ class mustash_mcp {
 			$base_url->setQueryStringVariable('sort_dir', $sort_dir);
 		}
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Generate data
      	   ----------------------------------------------------------------------------- */
 
 		$bundles = ee()->mustash_lib->get_bundles($perpage, $offset, $order);
 		$total = ee()->mustash_lib->get_total_bundles();
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Pagination
      	   ----------------------------------------------------------------------------- */
 
@@ -536,7 +536,7 @@ class mustash_mcp {
 			->currentPage($page)
 			->render($base_url);
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Construct table
      	   ----------------------------------------------------------------------------- */
 
@@ -567,7 +567,7 @@ class mustash_mcp {
 		if(count($bundles) >= '1')
 		{
 			foreach($bundles as $b)
-			{	
+			{
 				// toolbar items
 				$toolbar_items = array(
 					'sync' => array(
@@ -577,7 +577,7 @@ class mustash_mcp {
 					),
 				);
 
-				if ( $b['is_locked'] != 1 ) 
+				if ( $b['is_locked'] != 1 )
 				{
 					$toolbar_items += array(
 						'edit' => array(
@@ -599,7 +599,7 @@ class mustash_mcp {
 						'content' => $b['cnt'] . ' ' . lang('variables'),
 						'href' => ee('CP/URL', $this->url_base)->setQueryStringVariable('bundle_id', $b['id']),
 					),
-					
+
 					array('toolbar_items' => $toolbar_items),
 
 					array(
@@ -615,10 +615,10 @@ class mustash_mcp {
 				);
 			}
 		}
-		
+
 		$table->setData($data);
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Confirm remove modal
      	   ----------------------------------------------------------------------------- */
 
@@ -630,11 +630,11 @@ class mustash_mcp {
 		));
 
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Construct view
      	   ----------------------------------------------------------------------------- */
 
-		// body	
+		// body
 		$vars['cp_heading'] = lang('bundles');
 		$vars['total'] = $total;
 
@@ -649,8 +649,8 @@ class mustash_mcp {
 		$vars['add_bundle_url'] = ee('CP/URL', $this->url_base.'/add_bundle');
 
 		return $this->_load_view(
-			'mustash:bundles', 
-			$vars, 
+			'mustash:bundles',
+			$vars,
 			lang('bundles')
 		);
 	}
@@ -666,7 +666,7 @@ class mustash_mcp {
 
 		// insert the variable?
 		if(isset($_POST['insert_bundle']))
-		{	
+		{
 			$data = array(
 				'bundle_name'  => ee()->input->post('bundle_name'),
 				'bundle_label' => ee()->input->post('bundle_label')
@@ -698,7 +698,7 @@ class mustash_mcp {
 				$data['bundle_name'] = str_replace('%s', '', $data['bundle_name']);
 
 				if(ee()->mustash_lib->add_bundle($data))
-				{	
+				{
 					ee()->logger->log_action(ee()->lang->line('log_bundle_added'));
 
 					ee('CP/Alert')->makeInline('entries-form')
@@ -707,8 +707,8 @@ class mustash_mcp {
 								  ->addToBody(lang('add_success'))
 								  ->defer();
 
-					ee()->functions->redirect(ee('CP/URL', $this->url_base.'/bundles'));		
-					exit;			
+					ee()->functions->redirect(ee('CP/URL', $this->url_base.'/bundles'));
+					exit;
 				}
 				else
 				{
@@ -718,30 +718,30 @@ class mustash_mcp {
 								  ->addToBody(lang('add_fail'))
 								  ->defer();
 
-					ee()->functions->redirect(ee('CP/URL', $this->url_base.'/bundles'));	
-					exit;					
+					ee()->functions->redirect(ee('CP/URL', $this->url_base.'/bundles'));
+					exit;
 				}
 			}
 		}
 
-		// body	
+		// body
 		$vars['cp_heading'] = lang('add_bundle');
 
 		// urls
 		$vars['form_url'] = ee('CP/URL', $this->url_base.'/add_bundle');
 
 		return $this->_load_view(
-			'mustash:edit_bundle', 
-			$vars, 
+			'mustash:edit_bundle',
+			$vars,
 			lang('add_bundle'),
-			array(  
-				ee('CP/URL', $this->url_base.'/bundles')->compile() => lang('bundles') 
+			array(
+				ee('CP/URL', $this->url_base.'/bundles')->compile() => lang('bundles')
 			)
 		);
 	}
 
 	public function edit_bundle()
-	{	
+	{
 		if ( ! ee()->mustash_lib->can_access('bundles'))
 		{
 			show_error(lang('unauthorized_access'));
@@ -757,7 +757,7 @@ class mustash_mcp {
 		// get data for the requested bundle
 		$vars = ee()->mustash_lib->get_bundle($id);
 
-		if ( ! $vars || ( isset( $vars['is_locked']) && $vars['is_locked'] === '1') ) 
+		if ( ! $vars || ( isset( $vars['is_locked']) && $vars['is_locked'] === '1') )
 		{
 			// var doesn't exist or is locked
 			ee()->functions->redirect( ee('CP/URL', $this->url_base.'/bundles') );
@@ -765,7 +765,7 @@ class mustash_mcp {
 
 		// update the bundle?
 		if(isset($_POST['update_bundle']))
-		{	
+		{
 			$data = array(
 				'bundle_name'  => ee()->input->post('bundle_name'),
 				'bundle_label' => ee()->input->post('bundle_label')
@@ -799,7 +799,7 @@ class mustash_mcp {
 				$data['bundle_name'] = str_replace('%s', '', $data['bundle_name']);
 
 				if(ee()->mustash_lib->update_bundle($id, $data))
-				{	
+				{
 					ee()->logger->log_action(ee()->lang->line('log_bundle_updated'));
 
 					ee('CP/Alert')->makeInline('entries-form')
@@ -808,8 +808,8 @@ class mustash_mcp {
 								  ->addToBody(lang('update_success'))
 								  ->defer();
 
-					ee()->functions->redirect(ee('CP/URL', $this->url_base.'/bundles'));		
-					exit;			
+					ee()->functions->redirect(ee('CP/URL', $this->url_base.'/bundles'));
+					exit;
 				}
 				else
 				{
@@ -819,24 +819,24 @@ class mustash_mcp {
 								  ->addToBody(lang('update_fail'))
 								  ->defer();
 
-					ee()->functions->redirect(ee('CP/URL', $this->url_base.'/bundles'));	
-					exit;					
+					ee()->functions->redirect(ee('CP/URL', $this->url_base.'/bundles'));
+					exit;
 				}
 			}
 		}
 
-		// body	
+		// body
 		$vars['cp_heading'] = lang('edit_bundle');
 
 		// urls
 		$vars['form_url'] = ee('CP/URL', $this->url_base.'/edit_bundle')->setQueryStringVariable('bundle_id', $id);
 
 		return $this->_load_view(
-			'mustash:edit_bundle', 
-			$vars, 
+			'mustash:edit_bundle',
+			$vars,
 			lang('edit_bundle'),
-			array(  
-				ee('CP/URL', $this->url_base.'/bundles')->compile() => lang('bundles') 
+			array(
+				ee('CP/URL', $this->url_base.'/bundles')->compile() => lang('bundles')
 			)
 		);
 	}
@@ -863,8 +863,8 @@ class mustash_mcp {
 				->addToBody(lang('delete_fail'))
 				->defer();
 		}
-		
-		ee()->functions->redirect( ee('CP/URL', $this->url_base.'/bundles', ee()->cp->get_url_state()) );		
+
+		ee()->functions->redirect( ee('CP/URL', $this->url_base.'/bundles', ee()->cp->get_url_state()) );
 
 	}
 
@@ -878,7 +878,7 @@ class mustash_mcp {
 		$vars = array();
 
 		if(isset($_POST['update_mustash_rules']))
-		{	
+		{
 			// update rules
 			$hook  		= ee()->input->post('hook');
 			$group  	= ee()->input->post('group');
@@ -920,26 +920,26 @@ class mustash_mcp {
 							'plugin' 	=> $trigger[0],
 							'hook' 	 	=> $trigger[1],
 							'group_id'	=> $group_id,
-							'bundle_id'	=> $bundle_id, 
+							'bundle_id'	=> $bundle_id,
 							'scope'		=> $scope_value,
 							'pattern'	=> $pattern[$index],
 							'notes'		=> $notes[$index],
 							'ord'		=> $index
 						);
 					}
-		
+
 				}
 			}
 
 			// update ruleset
 			if(ee()->mustash_lib->update_rules($rules))
-			{	
+			{
 				ee()->logger->log_action(ee()->lang->line('log_rules_updated'));
 				ee('CP/Alert')->makeInline('entries-form')
 								  ->asSuccess()
 								  ->withTitle(lang('success'))
 								  ->addToBody(lang('update_success'))
-								  ->defer();		
+								  ->defer();
 			}
 			else
 			{
@@ -947,11 +947,11 @@ class mustash_mcp {
 								  ->asWarning()
 								  ->withTitle(lang('warning'))
 								  ->addToBody(lang('update_fail'))
-								  ->defer();					
+								  ->defer();
 			}
 
 			// redirect
-			ee()->functions->redirect( ee('CP/URL', $this->url_base.'/rules', ee()->cp->get_url_state()) );	
+			ee()->functions->redirect( ee('CP/URL', $this->url_base.'/rules', ee()->cp->get_url_state()) );
 			exit;
 		}
 
@@ -984,14 +984,14 @@ class mustash_mcp {
 		// -------------------------------------
 		//  Load CSS and JS
 		// -------------------------------------
-		// 
+		//
 		ee()->mustash_lib->load_assets(
 			array(
 				'jquery.dynoTable.js',
 				'jquery.chained.js',
 				'stash_rules.js'
 			)
-		);	
+		);
 
 		// set the page title
 		$vars['cp_heading'] = lang('rules');
@@ -1000,12 +1000,12 @@ class mustash_mcp {
 		$vars['form_url'] = ee('CP/URL', $this->url_base.'/rules');
 
 		return $this->_load_view(
-			'mustash:rules', 
-			$vars, 
+			'mustash:rules',
+			$vars,
 			lang('rules')
 		);
 	}
-	
+
 	public function settings()
 	{
 		if ( ! ee()->mustash_lib->can_access('settings'))
@@ -1041,7 +1041,7 @@ class mustash_mcp {
                 exit;
             }
 		}
-		
+
 		$vars = array(
 			'settings' 	=> $this->settings,
 			'form_url'	=> ee('CP/URL', $this->url_base.'/settings')
@@ -1115,15 +1115,15 @@ class mustash_mcp {
 		//  Load view
 		// -------------------------------------
 		return $this->_load_view(
-			'mustash:settings', 
-			$vars, 
+			'mustash:settings',
+			$vars,
 			lang('stash_settings')
 		);
 	}
 
 
 	// --------------------------------------------------------------------
-  
+
 	public function rewrite()
 	{
 		if ( ! ee()->mustash_lib->can_access('settings'))
@@ -1155,11 +1155,11 @@ class mustash_mcp {
 		//  Load view
 		// -------------------------------------
 		return $this->_load_view(
-			'mustash:rewrite', 
-			$vars, 
+			'mustash:rewrite',
+			$vars,
 			lang('stash_rewrite_rules'),
-			array(  
-				ee('CP/URL', $this->url_base.'/settings')->compile() => lang('stash_settings') 
+			array(
+				ee('CP/URL', $this->url_base.'/settings')->compile() => lang('stash_settings')
 			)
 		);
 	}
@@ -1168,9 +1168,9 @@ class mustash_mcp {
 	// --------------------------------------------------------------------
 
 	private function _load_view($view, $vars=array(), $heading='', $breadcrumb=array())
-	{	
+	{
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   override main header
      	   ----------------------------------------------------------------------------- */
 
@@ -1180,7 +1180,7 @@ class mustash_mcp {
 			'search_button_value' => lang('search_variables')
 		);
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Sidebar menu
      	   ----------------------------------------------------------------------------- */
 
@@ -1221,7 +1221,7 @@ class mustash_mcp {
 						$nav->isActive();
 					}
 				}
-				
+
 				// settings
 				if ($area == 'settings')
 				{
@@ -1232,7 +1232,7 @@ class mustash_mcp {
 			}
 		}
 
-		/* ----------------------------------------------------------------------------- 
+		/* -----------------------------------------------------------------------------
      	   Render view
      	   ----------------------------------------------------------------------------- */
 
@@ -1240,7 +1240,7 @@ class mustash_mcp {
 		$vars['url_base'] = $this->url_base;
 		$vars['settings'] = $this->settings;
 
-		if ( ! isset($vars['cp_heading'])) 
+		if ( ! isset($vars['cp_heading']))
 		{
 			$vars['cp_heading'] = $heading;
 		}
@@ -1250,8 +1250,8 @@ class mustash_mcp {
 		{
 			$alert = ee('CP/Alert')->makeInline('entries-form')
 						  ->asIssue()
-						  ->withTitle(lang('error'));	
-			foreach($this->errors as $msg) 
+						  ->withTitle(lang('error'));
+			foreach($this->errors as $msg)
 			{
 				$alert->addToBody($msg);
 			}
@@ -1262,7 +1262,7 @@ class mustash_mcp {
 		// add errors to view
 		$vars['errors'] = $this->errors;
 
-		// render body 
+		// render body
 		$v = ee('View')->make($view);
 		$body = $v->render($vars);
 
@@ -1270,7 +1270,7 @@ class mustash_mcp {
 		$breadcrumb_base = array(
 			ee('CP/URL', $this->url_base)->compile() => ee()->mustash_lib->mod_name
 		);
-		
+
 		return array(
 			'heading'  	 => $heading,
 		  	'body'       => $body,

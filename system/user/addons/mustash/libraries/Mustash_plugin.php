@@ -25,7 +25,7 @@ if ( ! class_exists('Mustash_hook'))
  * @filesource 	./system/user/addons/mustash/libraries/Mustash_plugin.php
  */
 abstract class Mustash_plugin extends Mustash_base {
-	
+
 	public $name, $short_name, $version, $priority;
 	protected $hooks = array();
 	protected $groups = array();
@@ -33,20 +33,19 @@ abstract class Mustash_plugin extends Mustash_base {
 	protected $ext_class_name;
 	protected $ext_version;
 
-	public function __construct() 
+	public function __construct()
 	{
 		parent::__construct();
 
 		$this->ext_class_name = $this->mod_name . '_ext';
 
-		# PHP 5.3+ only
-		#$this->short_name = preg_filter('/^Stash_([a-zA-Z0-9_-]+)_pi$/i', '$1', get_class($this));
-		$this->short_name = preg_replace('/^Stash_([a-zA-Z0-9_-]+)_pi$/i', '$1', get_class($this));
+		// PHP 5.3+ was the original requirement, now we're supporting PHP 8.0+
+		$this->short_name = preg_filter('/^Stash_([a-zA-Z0-9_-]+)_pi$/i', '$1', get_class($this));
 	}
 
 	/**
 	 * Activate plugin hooks
-	 * 
+	 *
 	 * @return void
 	 */
 	public function install()
@@ -62,7 +61,7 @@ abstract class Mustash_plugin extends Mustash_base {
 
 	/**
 	 * Remove plugin hooks
-	 * 
+	 *
 	 * @return void
 	 */
 	public function uninstall()
@@ -91,7 +90,7 @@ abstract class Mustash_plugin extends Mustash_base {
 
 		$installed_modules = ee()->mustash_model->get_modules();
 
-		foreach ($this->dependencies as $module) 
+		foreach ($this->dependencies as $module)
 		{
 			if ( ! in_array($module, $installed_modules))
 			{
@@ -123,13 +122,13 @@ abstract class Mustash_plugin extends Mustash_base {
 	 * @access     public
 	 * @return     array
 	 */
-	public function get_hooks() 
+	public function get_hooks()
 	{
 		$visible_hooks = array();
 
-		foreach($this->hooks AS $hook) 
+		foreach($this->hooks AS $hook)
 		{
-			if ($hook->is_visible()) 
+			if ($hook->is_visible())
 			{
 				$visible_hooks[] = $hook;
 			}
@@ -283,14 +282,14 @@ abstract class Mustash_plugin extends Mustash_base {
 	 * @access     protected
 	 * @return     array
 	 */
-	protected function destroy($bundle_id = FALSE, $session_id=NULL, $site_id = NULL, $regex = NULL) 
+	protected function destroy($bundle_id = FALSE, $session_id=NULL, $site_id = NULL, $regex = NULL)
 	{
 		ee()->load->add_package_path(PATH_THIRD.'stash/', TRUE);
 		ee()->load->model('stash_model');
 
 		// prep regex
 		if ( ! is_null($regex))
-		{	
+		{
 			if ( ! preg_match('/^#(.*)#$/', $regex))
 			{
 				$regex = '^' . $regex . '$'; // match an exact key
@@ -306,9 +305,9 @@ abstract class Mustash_plugin extends Mustash_base {
 
 		// add the current site id and pass througb to stash model
 		return ee()->stash_model->delete_matching_keys(
-			$bundle_id, 
-			$session_id, 
-			is_null($site_id) ? $this->site_id : $site_id, 
+			$bundle_id,
+			$session_id,
+			is_null($site_id) ? $this->site_id : $site_id,
 			$regex,
 			$invalidation_period
 		);

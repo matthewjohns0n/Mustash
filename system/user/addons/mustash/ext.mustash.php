@@ -22,6 +22,45 @@ class Mustash_ext extends Mustash_base {
 	// PROPERTIES
 	// --------------------------------------------------------------------
 
+	/**
+	 * Extension name
+	 *
+	 * @var        string
+	 * @access     public
+	 */
+	public $name;
+
+	/**
+	 * Extension version
+	 *
+	 * @var        string
+	 * @access     public
+	 */
+	public $version;
+
+	/**
+	 * Extension description
+	 *
+	 * @var        string
+	 * @access     public
+	 */
+	public $description;
+
+	/**
+	 * Extension documentation URL
+	 *
+	 * @var        string
+	 * @access     public
+	 */
+	public $docs_url;
+
+	/**
+	 * Extension settings exist flag
+	 *
+	 * @var        string
+	 * @access     public
+	 */
+	public $settings_exist;
 
 	/**
 	 * Settings
@@ -38,7 +77,7 @@ class Mustash_ext extends Mustash_base {
 	 * @access     private
 	 */
 	private static $plugin_hooks = array();
-		
+
 	/**
 	 * Constructor
 	 *
@@ -57,7 +96,8 @@ class Mustash_ext extends Mustash_base {
 		$this->settings_exist	= 'y';
 
 		// populate static plugin hooks array on first instantiation of this class
-		if ( empty(self::$plugin_hooks))
+		$plugin_hooks = self::$plugin_hooks;
+		if (count($plugin_hooks) === 0)
 		{
 			$query = ee()->db->from('extensions')
 								  ->where('class', __CLASS__)
@@ -104,7 +144,7 @@ class Mustash_ext extends Mustash_base {
 					$plugin_class = "stash_" . $plugin[0] . "_pi";
 
 					// load and instantiate the plugin
-					$plugin_instance = ee()->mustash_lib->plugin($plugin_class);	
+					$plugin_instance = ee()->mustash_lib->plugin($plugin_class);
 
 					// invoke the plugin method, using Reflection to preserve $this
 					$method = new ReflectionMethod($plugin_class, $plugin_method);
@@ -118,12 +158,12 @@ class Mustash_ext extends Mustash_base {
 
 	/**
 	 * Activate Extension
-	 * 
+	 *
 	 * @return void
 	 */
 	public function activate_extension()
 	{
-		
+
 	}
 
 	// ------------------------------------------------------
@@ -138,7 +178,7 @@ class Mustash_ext extends Mustash_base {
 		ee()->db->where('class', __CLASS__);
 		ee()->db->delete('extensions');
 	}
-	
+
 	// ------------------------------------------------------
 
 	/**
@@ -158,5 +198,4 @@ class Mustash_ext extends Mustash_base {
 		ee()->db->where('class', __CLASS__);
 		ee()->db->update('extensions', array('version' => $this->mod_version));
 	}
-	
 }

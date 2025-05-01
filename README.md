@@ -1,9 +1,10 @@
-# Mustash 3.0.1
+# Mustash 3.0.2
 
 Mustash for ExpressionEngine.
 
 * Author: [Mark Croxton](https://hallmark-design.co.uk/)
 * Requires: ExpressionEngine 6.0+
+* PHP Compatibility: PHP 7.0 - 8.4
 
 ### Description
 
@@ -24,4 +25,4 @@ Mustash is an ExpressionEngine control panel module for managing cached [Stash](
 3. In the CP, navigate to the Add-on Manager and click the 'Install' link for the Mustash module
 
 
-Copyright (c) 2021 Hallmark Design https://hallmark-design.co.uk
+Copyright (c) 2021-2024 Hallmark Design https://hallmark-design.co.uk
