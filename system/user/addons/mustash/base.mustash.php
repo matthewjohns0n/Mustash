@@ -92,6 +92,13 @@ abstract class Mustash_base {
 	 */
 	protected $site_id;
 
+	/**
+	 * Docs URL
+	 *
+	 * @var        string
+	 * @access     public
+	 */
+	public $mod_docs_url;
 
 	// --------------------------------------------------------------------
 	// METHODS
@@ -118,7 +125,7 @@ abstract class Mustash_base {
 		$this->mod_docs_url = $this->info->get('docs_url');
 
 		$this->mod_class_name = ucfirst($this->package);
-		
+
 	}
 
 	// --------------------------------------------------------------------
